@@ -1,8 +1,8 @@
-# Install script for directory: E:/Resources/Projects/ProjectAscii
+# Install script for directory: E:/Resources/Projects/PNG2Ascii
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "C:/Program Files (x86)/test")
+  set(CMAKE_INSTALL_PREFIX "C:/Program Files (x86)/Ascii")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -45,5 +45,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "E:/Resources/Projects/ProjectAscii/build/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "E:/Resources/Projects/PNG2Ascii/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

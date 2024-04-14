@@ -1,8 +1,8 @@
 [
 {
-  "directory": "E:/Resources/Projects/ProjectAscii/build",
-  "command": "C:\\msys64\\mingw64\\bin\\g++.exe -g -o CMakeFiles\\Demo.dir\\src\\main.cpp.obj -c E:\\Resources\\Projects\\ProjectAscii\\src\\main.cpp",
-  "file": "E:\\Resources\\Projects\\ProjectAscii\\src\\main.cpp",
-  "output": "CMakeFiles\\Demo.dir\\src\\main.cpp.obj"
+  "directory": "E:/Resources/Projects/PNG2Ascii/build",
+  "command": "C:\\msys64\\mingw64\\bin\\g++.exe -g -std=gnu++20 -o CMakeFiles\\Demo.dir\\src\\read_png.cpp.obj -c E:\\Resources\\Projects\\PNG2Ascii\\src\\read_png.cpp",
+  "file": "E:\\Resources\\Projects\\PNG2Ascii\\src\\read_png.cpp",
+  "output": "CMakeFiles\\Demo.dir\\src\\read_png.cpp.obj"
 }
 ]

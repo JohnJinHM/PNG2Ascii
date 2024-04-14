@@ -46,7 +46,14 @@
         "ostream": "cpp",
         "stdexcept": "cpp",
         "streambuf": "cpp",
-        "typeinfo": "cpp"
+        "typeinfo": "cpp",
+        "codecvt": "cpp",
+        "cstring": "cpp",
+        "ctime": "cpp",
+        "ratio": "cpp",
+        "iomanip": "cpp",
+        "sstream": "cpp",
+        "cinttypes": "cpp"
     },
-    "cmake.sourceDirectory": "E:/Resources/Projects/ProjectAscii"
+    "cmake.sourceDirectory": "E:/Resources/Projects/PNG2Ascii"
 }

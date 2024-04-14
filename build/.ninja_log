@@ -1,4 +1,5 @@
 # ninja log v5
-4	303	7347782003451139	CMakeFiles/Demo.dir/src/main.cpp.obj	22be6b4653a48597
-303	413	7347782004503469	Demo.exe	388dc10cc7ecdd2d
-1	92	7347771731289571	CMakeFiles/Demo.dir/font8x8-master/render.c.obj	a7c00236f4e045b1
+2	382	7348363419750056	CMakeFiles/Demo.dir/src/read_png.cpp.obj	680499d188dc4ba3
+383	501	7348363420868719	Demo.exe	241654ff024e8520
+4	497	7348390156941031	CMakeFiles/Demo.dir/src/read_png.cpp.obj	680499d188dc4ba3
+498	656	7348390158486635	Demo.exe	241654ff024e8520
