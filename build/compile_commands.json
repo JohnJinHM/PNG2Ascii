@@ -1,0 +1,8 @@
+[
+{
+  "directory": "E:/Resources/Projects/ProjectAscii/build",
+  "command": "C:\\msys64\\mingw64\\bin\\g++.exe -g -o CMakeFiles\\Demo.dir\\src\\main.cpp.obj -c E:\\Resources\\Projects\\ProjectAscii\\src\\main.cpp",
+  "file": "E:\\Resources\\Projects\\ProjectAscii\\src\\main.cpp",
+  "output": "CMakeFiles\\Demo.dir\\src\\main.cpp.obj"
+}
+]
