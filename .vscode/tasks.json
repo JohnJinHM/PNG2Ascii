@@ -8,6 +8,7 @@
                 "-fdiagnostics-color=always",
                 "-g",
                 "${file}",
+                "${fileDirname}\\asciify.cpp",
                 "${fileDirname}\\read_png.cpp",
                 "-o",
                 "${fileDirname}\\${fileBasenameNoExtension}.exe",

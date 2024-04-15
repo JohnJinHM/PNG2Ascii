@@ -18,17 +18,17 @@ void Image::read_image() {
   
   // Image check
   int ret = fread(buf, 1, 8, fp);
-  if(ret != 8) printf("Error: file opened, but could not be read\n");
+  if(ret != 8) {printf("Error: file opened, but could not be read\n"); abort();}
   ret = png_sig_cmp(buf, 0, 8);
-  if(ret) printf("Error: not a PNG file\n");
+  if(ret) {printf("Error: not a PNG file\n"); abort();}
 
   png_structp png = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
-  if(!png) printf("Error: can't allocate memory for image data\n");
+  if(!png) {printf("Error: can't allocate memory for image data\n"); abort();}
 
   png_infop info = png_create_info_struct(png);
-  if(!info) printf("Error: can't allocate memory for image data\n");
+  if(!info) {printf("Error: can't allocate memory for image data\n"); abort();}
 
-  if(setjmp(png_jmpbuf(png))) printf("Error in libpng module\n");
+  if(setjmp(png_jmpbuf(png))) {printf("Error in libpng module\n"); abort();}
 
   
   // Parse image
@@ -68,7 +68,7 @@ void Image::read_image() {
 
   png_read_update_info(png, info);
 
-  if (row_pointers) printf("Row pointer not set to null\n");
+  if (row_pointers) {printf("Row pointer not set to null\n"); abort();}
 
   row_pointers = (png_bytep*)malloc(sizeof(png_bytep) * height);
   for(int y = 0; y < height; y++) {
@@ -129,17 +129,6 @@ void Image::read_image() {
 
 //   png_destroy_write_struct(&png, &info);
 // }
-
-void Image::process_png_file() {
-  for(int y = 0; y < height; y++) {
-    png_bytep row = row_pointers[y];
-    for(int x = 0; x < width; x++) {
-      png_bytep px = &(row[x * 4]);
-      // Do something awesome for each pixel here...
-      printf("%4d, %4d = RGBA(%3d, %3d, %3d, %3d)\n", x, y, px[0], px[1], px[2], px[3]);
-    }
-  }
-}
 
 // int main(int argc, char * argv[]) {
 //   std::string filename = "..\\examples\\3.png";

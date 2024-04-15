@@ -8,5 +8,4 @@ class Image{
     
     Image(char* filename);
     void read_image();
-    void process_png_file();
 };
