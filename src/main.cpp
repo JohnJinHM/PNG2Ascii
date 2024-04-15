@@ -1,7 +1,7 @@
 #include <iostream>
-#include <png.h>
 
 #include "../font8x8-master/font8x8_basic.h"
+#include "read_img.h"
 
 using namespace std;
 
@@ -19,15 +19,22 @@ void render(unsigned char *bitmap) {
 }
 
 int main(){
-    unsigned char letter;
-    cout << "Enter a letter: ";
-    cin >> letter;
+    // unsigned char letter;
+    // cout << "Enter a letter: ";
+    // cin >> letter;
 
-    unsigned char *bitmap = font8x8_basic[letter];
+    // unsigned char *bitmap = font8x8_basic[letter];
     
-    render(bitmap);
+    // render(bitmap);
 
-    cin.ignore();
+    string filename;
+    cout << "Enter the path to image: " << endl;
+    cin >> filename;
+    Image* img = new Image(&filename[0]);
+    img->process_png_file();
+    cin.clear();
+
+    cin.ignore(INT_MAX,'\n');
     cin.ignore();
     return 0;
 }

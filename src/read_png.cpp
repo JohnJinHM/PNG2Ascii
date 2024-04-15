@@ -1,18 +1,22 @@
 #include <iostream>
 #include <stdlib.h>
-#include "read_png.h"
+#include "read_img.h"
 
-int width, height;
 png_byte color_type;
 png_byte bit_depth;
-png_bytep *row_pointers = NULL;
-png_byte buf[8];
 
-using namespace std;
+Image::Image(char *filename):
+  filename{filename}
+{
+  row_pointers = NULL;
+  read_image();
+}
 
-void read_png_file(char *filename) {
+void Image::read_image() {
   FILE *fp = fopen(filename, "rb");
-
+  png_byte buf[8];
+  
+  // Image check
   int ret = fread(buf, 1, 8, fp);
   if(ret != 8) printf("Error: file opened, but could not be read\n");
   ret = png_sig_cmp(buf, 0, 8);
@@ -26,7 +30,8 @@ void read_png_file(char *filename) {
 
   if(setjmp(png_jmpbuf(png))) printf("Error in libpng module\n");
 
-
+  
+  // Parse image
   png_init_io(png, fp);
   png_set_sig_bytes(png, 8);
   png_read_info(png, info);
@@ -38,7 +43,6 @@ void read_png_file(char *filename) {
 
   // Read any color_type into 8bit depth, RGBA format.
   // See http://www.libpng.org/pub/png/libpng-manual.txt
-
   if(bit_depth == 16)
     png_set_strip_16(png);
 
@@ -54,17 +58,17 @@ void read_png_file(char *filename) {
 
   // These color_type don't have an alpha channel then fill it with 0xff.
   if(color_type == PNG_COLOR_TYPE_RGB ||
-     color_type == PNG_COLOR_TYPE_GRAY ||
-     color_type == PNG_COLOR_TYPE_PALETTE)
+    color_type == PNG_COLOR_TYPE_GRAY ||
+    color_type == PNG_COLOR_TYPE_PALETTE)
     png_set_filler(png, 0xFF, PNG_FILLER_AFTER);
 
   if(color_type == PNG_COLOR_TYPE_GRAY ||
-     color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
+    color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
     png_set_gray_to_rgb(png);
 
   png_read_update_info(png, info);
 
-  if (row_pointers) abort();
+  if (row_pointers) printf("Row pointer not set to null\n");
 
   row_pointers = (png_bytep*)malloc(sizeof(png_bytep) * height);
   for(int y = 0; y < height; y++) {
@@ -126,7 +130,7 @@ void read_png_file(char *filename) {
 //   png_destroy_write_struct(&png, &info);
 // }
 
-void process_png_file() {
+void Image::process_png_file() {
   for(int y = 0; y < height; y++) {
     png_bytep row = row_pointers[y];
     for(int x = 0; x < width; x++) {
@@ -137,12 +141,12 @@ void process_png_file() {
   }
 }
 
-int main(int argc, char * argv[]) {
-  std::string filename = "..\\examples\\3.png";
-  cout << argv[0] << endl << filename << endl;
-  read_png_file(&filename[0]);
-  process_png_file();
-  // write_png_file(argv[2]);
+// int main(int argc, char * argv[]) {
+//   std::string filename = "..\\examples\\3.png";
+//   cout << argv[0] << endl << filename << endl;
+//   read_png_file(&filename[0]);
+//   process_png_file();
+//   // write_png_file(argv[2]);
 
-  return 0;
-}
+//   return 0;
+// }

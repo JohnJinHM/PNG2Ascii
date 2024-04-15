@@ -4,7 +4,6 @@
             "name": "Win32",
             "includePath": [
                 "${workspaceFolder}/**",
-                "${workspaceFolder}/font8x8-master",
                 "C:/msys64/mingw64/include"
             ],
             "defines": [
