@@ -14,10 +14,12 @@ void visualize(Image* img);
 class Token{
     public:
     const int token_size{}, bit_len{};
-    int bit_cnt, lumin;
+    int bits_cnt, row_start{}, col_start{}, lumin;
     int** bitmap;
 
-    Token(png_bytep* bytes, int token_size, int bit_len);
+    Token(Image* img, int row_end, int col_end, int token_size, int bit_num);
+    Token();
+    string to_string();
 };
 
 class TokenizedImage{
@@ -25,11 +27,13 @@ class TokenizedImage{
     Image* img{};
     const int token_size{}, bit_len{};
     int tokens_width, tokens_height;
-    Token **tokens;
+    Token*** tokens;
 
     TokenizedImage(Image* img, int token_size, int bit_len);
+    string to_string();
 };
 
 // Process:
-// 传入：img, token尺寸（最小8*8-形状 1*1亮度）
+// 传入：img, token尺寸（最小8*                                    8-形状 1*1亮度）
 // 如果不是8*8倍数不接受？
+// (R * 11 + G * 16 + B * 5)/32

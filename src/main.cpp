@@ -32,6 +32,8 @@ int main(){
     cin >> filename;
     Image* img = new Image(&filename[0]);
     visualize(img);
+    TokenizedImage* tk = new TokenizedImage(img, 8, 2);
+    cout << tk->to_string() << endl;
     cin.clear();
 
     cin.ignore(INT_MAX,'\n');
