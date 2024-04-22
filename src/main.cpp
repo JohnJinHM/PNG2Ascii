@@ -32,7 +32,7 @@ int main(){
     cin >> filename;
     Image* img = new Image(&filename[0]);
     visualize(img);
-    TokenizedImage* tk = new TokenizedImage(img, 8, 2);
+    TokenizedImage* tk = new TokenizedImage(img, 4, 1);
     cout << tk->to_string() << endl;
     cin.clear();
 

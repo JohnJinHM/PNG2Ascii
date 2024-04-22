@@ -31,10 +31,11 @@ Token::Token(Image* img, int row_start, int col_start, int token_size, int bit_l
 {
     bits_cnt = token_size/bit_len;
     int avg_greyscale = 0;
+    lumin = 0;
 
-    bitmap = (int**)malloc(sizeof(int*)*bits_cnt);
+    bitmap = new int*[bits_cnt];
     for(int y = 0; y < bits_cnt; y++){
-        bitmap[y] = (int*)malloc(sizeof(int)*bits_cnt);
+        bitmap[y] = new int[bits_cnt];
         for(int x = 0; x < bits_cnt; x++){
             
             for(int img_y = 0; img_y < bit_len; img_y++){
@@ -42,15 +43,19 @@ Token::Token(Image* img, int row_start, int col_start, int token_size, int bit_l
                 for(int img_x = 0; img_x < bit_len; img_x++){
                     png_bytep px = &row[(row_start+y*bit_len+img_x)*4];
                     // Fill 0 for out-of-bound?
+                    // (R * 11 + G * 16 + B * 5)/32
                     avg_greyscale += (px[0]*11+px[1]*16+px[2]*5)*px[3];
                 }
             }
-
-            bitmap[y][x] = avg_greyscale/8160/bit_len/bit_len;
+            
+            avg_greyscale = avg_greyscale/8160/bit_len/bit_len;
+            lumin += avg_greyscale;
+            bitmap[y][x] = avg_greyscale; //255*32
             
             avg_greyscale = 0;
         }
     }
+    lumin = lumin/bits_cnt/bits_cnt;
 }
 
 string Token::to_string(){
@@ -84,9 +89,10 @@ string TokenizedImage::to_string(){
     string temp = "";
     for(int y = 0; y < tokens_height; y++){
         for(int x = 0; x < tokens_width; x++){
-            temp += tokens[y][x]->to_string();
+            temp += std::to_string(tokens[y][x]->lumin);
+            temp += ", ";
         }
-        temp += "\n\n";
+        temp += "\n";
     }
     return temp;
 }

@@ -18,7 +18,6 @@ class Token{
     int** bitmap;
 
     Token(Image* img, int row_end, int col_end, int token_size, int bit_num);
-    Token();
     string to_string();
 };
 
@@ -33,7 +32,4 @@ class TokenizedImage{
     string to_string();
 };
 
-// Process:
-// 传入：img, token尺寸（最小8*                                    8-形状 1*1亮度）
 // 如果不是8*8倍数不接受？
-// (R * 11 + G * 16 + B * 5)/32
