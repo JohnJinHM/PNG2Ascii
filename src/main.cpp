@@ -1,22 +1,21 @@
 #include <iostream>
 
-#include "../font8x8-master/font8x8_basic.h"
 #include "asciify.h"
 
-using namespace std;
+using std::cin, std::cout, std::endl, std::string;
 
-// void render(unsigned char *bitmap) {
-//     int x,y;
-//     int set;
-//     int mask;
-//     for (x=0; x < 8; x++) {
-//         for (y=0; y < 8; y++) {
-//             set = bitmap[x] & 1 << y;
-//             printf("%c", set ? 'X' : ' ');
-//         }
-//         printf("\n");
-//     }
-// }
+void render(unsigned char *bitmap) {
+    int x,y;
+    int set;
+    int mask;
+    for (x=0; x < 8; x++) {
+        for (y=0; y < 8; y++) {
+            set = bitmap[x] & 1 << y;
+            printf("%c", set ? 'X' : ' ');
+        }
+        printf("\n");
+    }
+}
 
 int main(){
     // unsigned char letter;

@@ -1,8 +1,11 @@
-#include "read_img.h"
-#include <iostream>
-#include <string>
-using namespace std;
+#ifndef ASCIIFY_H
+#define ASCIIFY_H
 
+#include <string>
+#include "read_img.h"
+#include "load_char.h"
+
+using std::string;
 // 计划：
 // Tokenize, 给定字符长度，将图片等分
 // 亮度匹配 (block) / 形状匹配 (XOR sum)
@@ -13,12 +16,12 @@ void visualize(Image* img);
 // 先取average亮度
 class Token{
     public:
-    const int token_size{}, bit_len{};
-    int bits_cnt, row_start{}, col_start{}, lumin;
+    const int token_size{}, bit_len{}, row_start{}, col_start{};
+    int bits_cnt, lumin;
     int** bitmap;
 
     Token(Image* img, int row_end, int col_end, int token_size, int bit_num);
-    string to_string();
+    std::string to_string();
 };
 
 class TokenizedImage{
@@ -29,7 +32,9 @@ class TokenizedImage{
     Token*** tokens;
 
     TokenizedImage(Image* img, int token_size, int bit_len);
-    string to_string();
+    std::string to_string();
 };
 
 // 如果不是8*8倍数不接受？
+
+#endif

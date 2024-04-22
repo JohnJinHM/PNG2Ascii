@@ -58,8 +58,8 @@ Token::Token(Image* img, int row_start, int col_start, int token_size, int bit_l
     lumin = lumin/bits_cnt/bits_cnt;
 }
 
-string Token::to_string(){
-    string temp = "";
+std::string Token::to_string(){
+    std::string temp = "";
     for(int y = 0; y < bits_cnt; y++){
         for(int x = 0; x < bits_cnt; x++){
             temp += std::to_string(bitmap[y][x]);
@@ -85,8 +85,8 @@ TokenizedImage::TokenizedImage(Image* img, int token_size, int bit_len):
     }
 }
 
-string TokenizedImage::to_string(){
-    string temp = "";
+std::string TokenizedImage::to_string(){
+    std::string temp = "";
     for(int y = 0; y < tokens_height; y++){
         for(int x = 0; x < tokens_width; x++){
             temp += std::to_string(tokens[y][x]->lumin);

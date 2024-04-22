@@ -8,6 +8,7 @@
                 "-fdiagnostics-color=always",
                 "-g",
                 "${file}",
+                "${fileDirname}\\load_char.cpp",
                 "${fileDirname}\\asciify.cpp",
                 "${fileDirname}\\read_png.cpp",
                 "-o",

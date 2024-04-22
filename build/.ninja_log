@@ -1,5 +1,6 @@
 # ninja log v5
-15	360	7348600848118585	CMakeFiles/Demo.dir/src/read_png.cpp.obj	680499d188dc4ba3
+14	405	7354675332830104	CMakeFiles/Demo.dir/src/read_png.cpp.obj	680499d188dc4ba3
 329	443	7348601384072664	Demo.exe	fce3e92e0c56e874
-4	382	7348600848328549	CMakeFiles/Demo.dir/src/main.cpp.obj	17c1e1bd3bb90a7d
-4	328	7348601383027472	CMakeFiles/Demo.dir/src/asciify.cpp.obj	3f18a01b3ba1098d
+4	435	7354675333124018	CMakeFiles/Demo.dir/src/main.cpp.obj	17c1e1bd3bb90a7d
+24	495	7354675333728954	CMakeFiles/Demo.dir/src/asciify.cpp.obj	3f18a01b3ba1098d
+34	405	7354675332840109	CMakeFiles/Demo.dir/src/load_char.cpp.obj	9f636f6602970c4b

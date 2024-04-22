@@ -2,7 +2,7 @@ cmake_minimum_required( VERSION 3.16 )
 
 project(Ascii)
 
-add_executable(Demo src/main.cpp src/read_png.cpp src/asciify.cpp)
+add_executable(Demo src/main.cpp src/read_png.cpp src/asciify.cpp src/load_char.cpp)
 
 find_package(PNG REQUIRED)
 include_directories("C:\\msys64\\mingw64\\include")

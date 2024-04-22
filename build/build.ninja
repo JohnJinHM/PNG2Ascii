@@ -67,6 +67,12 @@ build CMakeFiles/Demo.dir/src/asciify.cpp.obj: CXX_COMPILER__Demo_unscanned_Debu
   OBJECT_DIR = CMakeFiles\Demo.dir
   OBJECT_FILE_DIR = CMakeFiles\Demo.dir\src
 
+build CMakeFiles/Demo.dir/src/load_char.cpp.obj: CXX_COMPILER__Demo_unscanned_Debug E$:/Resources/Projects/PNG2Ascii/src/load_char.cpp || cmake_object_order_depends_target_Demo
+  DEP_FILE = CMakeFiles\Demo.dir\src\load_char.cpp.obj.d
+  FLAGS = -g -std=gnu++20
+  OBJECT_DIR = CMakeFiles\Demo.dir
+  OBJECT_FILE_DIR = CMakeFiles\Demo.dir\src
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target Demo
@@ -75,7 +81,7 @@ build CMakeFiles/Demo.dir/src/asciify.cpp.obj: CXX_COMPILER__Demo_unscanned_Debu
 #############################################
 # Link the executable Demo.exe
 
-build Demo.exe: CXX_EXECUTABLE_LINKER__Demo_Debug CMakeFiles/Demo.dir/src/main.cpp.obj CMakeFiles/Demo.dir/src/read_png.cpp.obj CMakeFiles/Demo.dir/src/asciify.cpp.obj
+build Demo.exe: CXX_EXECUTABLE_LINKER__Demo_Debug CMakeFiles/Demo.dir/src/main.cpp.obj CMakeFiles/Demo.dir/src/read_png.cpp.obj CMakeFiles/Demo.dir/src/asciify.cpp.obj CMakeFiles/Demo.dir/src/load_char.cpp.obj
   FLAGS = -g
   LINK_LIBRARIES = -lPNG  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\Demo.dir
