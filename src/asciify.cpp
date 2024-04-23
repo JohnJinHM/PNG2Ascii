@@ -1,4 +1,6 @@
 #include "asciify.h"
+#include "load_char.h"
+
 
 void visualize(Image* img){
     for(int y = 0; y < img->height; y+=3) {
@@ -26,71 +28,85 @@ void visualize(Image* img){
 //     lumin = lumin >> 6; // divide by 64
 // }
 
-Token::Token(Image* img, int row_start, int col_start, int token_size, int bit_len):
-    token_size{token_size}, bit_len{bit_len}, row_start{row_start}, col_start{col_start}
+Token::Token(Image* img, int xbit_len, int ybit_len, int x_len, int y_len, int x_start, int y_start):
+    xbit_len{xbit_len}, ybit_len{ybit_len}, x_len{x_len}, y_len{y_len}, x_start{x_start}, y_start{y_start}
 {
-    bits_cnt = token_size/bit_len;
+    xbits_cnt = x_len/xbit_len;
+    ybits_cnt = y_len/ybit_len;
     int avg_greyscale = 0;
     lumin = 0;
 
-    bitmap = new int*[bits_cnt];
-    for(int y = 0; y < bits_cnt; y++){
-        bitmap[y] = new int[bits_cnt];
-        for(int x = 0; x < bits_cnt; x++){
+    bitmap = new int*[ybits_cnt];
+    for(int y = 0; y < ybits_cnt; y++){
+        bitmap[y] = new int[xbits_cnt];
+        for(int x = 0; x < xbits_cnt; x++){
             
-            for(int img_y = 0; img_y < bit_len; img_y++){
-                png_bytep row = img->row_pointers[col_start+x*bit_len+img_y];
-                for(int img_x = 0; img_x < bit_len; img_x++){
-                    png_bytep px = &row[(row_start+y*bit_len+img_x)*4];
+            for(int img_y = 0; img_y < ybit_len; img_y++){
+                png_bytep row = img->row_pointers[y_start+y*ybit_len+img_y];
+                for(int img_x = 0; img_x < xbit_len; img_x++){
+                    png_bytep px = &row[(x_start+x*xbit_len+img_x)*4];
                     // Fill 0 for out-of-bound?
                     // (R * 11 + G * 16 + B * 5)/32
                     avg_greyscale += (px[0]*11+px[1]*16+px[2]*5)*px[3];
                 }
             }
             
-            avg_greyscale = avg_greyscale/8160/bit_len/bit_len;
+            avg_greyscale = avg_greyscale/8160/xbit_len/ybit_len; //255*32
             lumin += avg_greyscale;
-            bitmap[y][x] = avg_greyscale; //255*32
+            bitmap[y][x] = avg_greyscale; 
             
             avg_greyscale = 0;
         }
     }
-    lumin = lumin/bits_cnt/bits_cnt;
+    lumin = lumin/xbits_cnt/ybits_cnt; // throws error when token size too small
 }
 
-std::string Token::to_string(){
-    std::string temp = "";
-    for(int y = 0; y < bits_cnt; y++){
-        for(int x = 0; x < bits_cnt; x++){
-            temp += std::to_string(bitmap[y][x]);
-            temp += ",";
-        }
-        temp += "\n";
-    }
-    return temp;
-}
+// std::string Token::to_string(){
+    // std::string temp = "";
+    
 
-TokenizedImage::TokenizedImage(Image* img, int token_size, int bit_len):
-    img{img}, token_size{token_size}, bit_len{bit_len}
+    // for(int y = 0; y < bits_cnt; y++){
+    //     for(int x = 0; x < bits_cnt; x++){
+    //         temp += std::to_string(bitmap[y][x]);
+    //         temp += ",";
+    //     }
+    //     temp += "\n";
+    // }
+    // return temp;
+// }
+
+TokenizedImage::TokenizedImage(Image* img, int xtoken_cnt, int ytoken_cnt, int xbit_len, int ybit_len):
+    img{img}, xtoken_cnt{xtoken_cnt}, ytoken_cnt{ytoken_cnt}, xbit_len{xbit_len}, ybit_len{ybit_len}
 {   
-    tokens_width = img->width/token_size;
-    tokens_height = img->height/token_size;
+    xtoken_len = img->width/xtoken_cnt;
+    ytoken_len = img->height/ytoken_cnt;
 
-    tokens = new Token**[tokens_height];
-    for(int y = 0; y < tokens_height; y++){
-        tokens[y] = new Token*[tokens_width];
-        for(int x = 0; x < tokens_width; x++){
-            tokens[y][x] = new Token(img, x*token_size, y*token_size, token_size, bit_len); 
+    tokens = new Token**[ytoken_cnt];
+    for(int y = 0; y < ytoken_cnt; y++){
+        tokens[y] = new Token*[xtoken_cnt];
+        for(int x = 0; x < xtoken_cnt; x++){
+            tokens[y][x] = new Token(img, xbit_len, ybit_len, xtoken_len, ytoken_len, x*xtoken_len, y*ytoken_len); 
         }
     }
 }
 
 std::string TokenizedImage::to_string(){
+    CharMaps* char_maps = new CharMaps();
     std::string temp = "";
-    for(int y = 0; y < tokens_height; y++){
-        for(int x = 0; x < tokens_width; x++){
-            temp += std::to_string(tokens[y][x]->lumin);
-            temp += ", ";
+    for(int y = 0; y < ytoken_cnt; y++){
+        for(int x = 0; x < xtoken_cnt; x++){
+            int min_diff = 255;
+            int best_match = 0;
+            int curr_diff = 0;
+            Token curr = *tokens[y][x];
+            for(int i = 0; i < char_maps->map_len; i++){
+                curr_diff = std::abs(char_maps->lumin[i]-curr.lumin);
+                if(curr_diff < min_diff){
+                    min_diff = curr_diff;
+                    best_match = i;
+                }
+            }
+            temp += char_maps->chars[best_match];
         }
         temp += "\n";
     }

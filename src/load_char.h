@@ -3,6 +3,8 @@
 
 class CharMaps{
     public:
+    int map_len;
+    char* chars;
     int* lumin;
     int*** char_bitmaps;
 

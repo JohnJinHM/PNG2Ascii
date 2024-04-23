@@ -3,7 +3,6 @@
 
 #include <string>
 #include "read_img.h"
-#include "load_char.h"
 
 using std::string;
 // 计划：
@@ -16,22 +15,25 @@ void visualize(Image* img);
 // 先取average亮度
 class Token{
     public:
-    const int token_size{}, bit_len{}, row_start{}, col_start{};
-    int bits_cnt, lumin;
+    // x/ybit_len: Number of pixels for each bit
+    // x/y_len: Number of pixels for each token
+    // x/ybits_cnt: Count of bits in each token
+    const int xbit_len{}, ybit_len{}, x_len{}, y_len{}, x_start{}, y_start{};
+    int xbits_cnt, ybits_cnt, lumin;
     int** bitmap;
 
-    Token(Image* img, int row_end, int col_end, int token_size, int bit_num);
+    Token(Image* img, int xbit_len, int ybit_len, int x_len, int y_len, int x_start, int y_start);
     std::string to_string();
 };
 
 class TokenizedImage{
     public:
     Image* img{};
-    const int token_size{}, bit_len{};
-    int tokens_width, tokens_height;
+    const int xtoken_cnt{}, ytoken_cnt{}, xbit_len{}, ybit_len{};
+    int xtoken_len, ytoken_len;
     Token*** tokens;
 
-    TokenizedImage(Image* img, int token_size, int bit_len);
+    TokenizedImage(Image* img, int xtoken_cnt, int ytoken_cnt, int xbit_len, int ybit_len);
     std::string to_string();
 };
 

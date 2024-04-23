@@ -30,8 +30,8 @@ int main(){
     cout << "Enter the path to image: " << endl;
     cin >> filename;
     Image* img = new Image(&filename[0]);
-    visualize(img);
-    TokenizedImage* tk = new TokenizedImage(img, 4, 1);
+    // visualize(img);
+    TokenizedImage* tk = new TokenizedImage(img,81,27,3,3); // x tokencnt : y tokencnt 3:1?
     cout << tk->to_string() << endl;
     cin.clear();
 
