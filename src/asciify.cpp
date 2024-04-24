@@ -1,6 +1,9 @@
 #include "asciify.h"
 #include "load_char.h"
-
+#include <algorithm>
+#include <vector>
+#include <numeric>
+#include <cmath>
 
 void visualize(Image* img){
     for(int y = 0; y < img->height; y+=3) {
@@ -33,8 +36,8 @@ Token::Token(Image* img, int xbit_len, int ybit_len, int x_len, int y_len, int x
 {
     xbits_cnt = x_len/xbit_len;
     ybits_cnt = y_len/ybit_len;
-    int avg_greyscale = 0;
-    lumin = 0;
+    int avg_gs = 0;
+    gs = 0;
 
     bitmap = new int*[ybits_cnt];
     for(int y = 0; y < ybits_cnt; y++){
@@ -47,18 +50,19 @@ Token::Token(Image* img, int xbit_len, int ybit_len, int x_len, int y_len, int x
                     png_bytep px = &row[(x_start+x*xbit_len+img_x)*4];
                     // Fill 0 for out-of-bound?
                     // (R * 11 + G * 16 + B * 5)/32
-                    avg_greyscale += (px[0]*11+px[1]*16+px[2]*5)*px[3];
+                    avg_gs += (px[0]*11+px[1]*16+px[2]*5)*px[3];
+                    // printf("%d,%d,%d,%d,", px[0],px[1],px[2],px[3]);
                 }
             }
             
-            avg_greyscale = avg_greyscale/8160/xbit_len/ybit_len; //255*32
-            lumin += avg_greyscale;
-            bitmap[y][x] = avg_greyscale; 
+            avg_gs = avg_gs/8160/xbit_len/ybit_len; //255*32
+            gs += avg_gs;
+            bitmap[y][x] = avg_gs; 
             
-            avg_greyscale = 0;
+            avg_gs = 0;
         }
     }
-    lumin = lumin/xbits_cnt/ybits_cnt; // throws error when token size too small
+    gs = gs/xbits_cnt/ybits_cnt; // throws error when token size too small
 }
 
 // std::string Token::to_string(){
@@ -81,17 +85,25 @@ TokenizedImage::TokenizedImage(Image* img, int xtoken_cnt, int ytoken_cnt, int x
     xtoken_len = img->width/xtoken_cnt;
     ytoken_len = img->height/ytoken_cnt;
 
+    gs = new int[xtoken_cnt*ytoken_cnt];
+    gs_cnt = 0;
+
     tokens = new Token**[ytoken_cnt];
     for(int y = 0; y < ytoken_cnt; y++){
         tokens[y] = new Token*[xtoken_cnt];
         for(int x = 0; x < xtoken_cnt; x++){
             tokens[y][x] = new Token(img, xbit_len, ybit_len, xtoken_len, ytoken_len, x*xtoken_len, y*ytoken_len); 
+            if(tokens[y][x]->gs!=0){
+                gs[gs_cnt] = tokens[y][x]->gs;
+                gs_cnt++;
+            }
         }
     }
 }
 
 std::string TokenizedImage::to_string(){
     CharMaps* char_maps = new CharMaps();
+    map_brightness(char_maps->lumin_non_empty, char_maps->lumin_len);
     std::string temp = "";
     for(int y = 0; y < ytoken_cnt; y++){
         for(int x = 0; x < xtoken_cnt; x++){
@@ -99,16 +111,31 @@ std::string TokenizedImage::to_string(){
             int best_match = 0;
             int curr_diff = 0;
             Token curr = *tokens[y][x];
-            for(int i = 0; i < char_maps->map_len; i++){
-                curr_diff = std::abs(char_maps->lumin[i]-curr.lumin);
-                if(curr_diff < min_diff){
-                    min_diff = curr_diff;
-                    best_match = i;
+            if(curr.gs==0) temp+=" ";
+            else{
+                int curr_lumin = lumin_mean+(curr.gs-gs_mean)*lumin_sd/gs_sd;
+                // printf("lm:%d\n", curr_lumin);
+                for(int i = 0; i < char_maps->map_len; i++){
+                    curr_diff = std::abs(char_maps->lumin[i]-curr_lumin);
+                    if(curr_diff < min_diff){
+                        min_diff = curr_diff;
+                        best_match = i;
+                    }
                 }
+                temp += char_maps->chars[best_match];
             }
-            temp += char_maps->chars[best_match];
         }
         temp += "\n";
     }
     return temp;
+}
+
+void TokenizedImage::map_brightness(int* lumin_array, int lumin_len){
+    lumin_mean = std::accumulate(lumin_array,&lumin_array[0]+lumin_len,0.0)/lumin_len;
+    double lumin_sq_sum = std::inner_product(lumin_array,&lumin_array[0]+lumin_len,lumin_array,0.0);
+    lumin_sd = std::sqrt(lumin_sq_sum / lumin_len - lumin_mean * lumin_mean);
+
+    gs_mean = std::accumulate(gs,&gs[0]+gs_cnt,0.0)/gs_cnt;
+    double gs_sq_sum = std::inner_product(gs,&gs[0]+gs_cnt,gs,0.0);
+    gs_sd = std::sqrt(gs_sq_sum / gs_cnt - gs_mean * gs_mean);
 }

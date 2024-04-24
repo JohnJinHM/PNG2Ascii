@@ -31,7 +31,7 @@ int main(){
     cin >> filename;
     Image* img = new Image(&filename[0]);
     // visualize(img);
-    TokenizedImage* tk = new TokenizedImage(img,81,27,3,3); // x tokencnt : y tokencnt 3:1?
+    TokenizedImage* tk = new TokenizedImage(img,81,27,3,3); // xtokencnt:ytokencnt 3:1? bitlen*tokencnt > image width
     cout << tk->to_string() << endl;
     cin.clear();
 

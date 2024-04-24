@@ -17,15 +17,19 @@
 
 CharMaps::CharMaps(){
     map_len = sizeof(font8x8_basic)/sizeof(*font8x8_basic);
+
     lumin = new int[map_len];
+    lumin_non_empty = new int[map_len];
+    lumin_len = 0;
+    
     chars = new char[map_len];
     char_bitmaps = new int**[map_len];
 
     int set = 0;
 
     for(int i = 0; i < map_len; i++){
-        lumin[i] = 0;
         char_bitmaps[i] = new int*[8];
+        lumin[i] = 0;
         for (int x = 0; x < 8; x++) {
             char_bitmaps[i][x] = new int[8];
             for (int y = 0; y < 8; y++) {
@@ -39,6 +43,10 @@ CharMaps::CharMaps(){
         }
         lumin[i] = lumin[i]*255/64;
         if(lumin[i] == 0) chars[i] = ' ';
-        else chars[i] = (char) i;
+        else{
+            chars[i] = (char) i;
+            lumin_non_empty[lumin_len] = lumin[i];
+            lumin_len++;
+        }
     }
 }

@@ -19,7 +19,7 @@ class Token{
     // x/y_len: Number of pixels for each token
     // x/ybits_cnt: Count of bits in each token
     const int xbit_len{}, ybit_len{}, x_len{}, y_len{}, x_start{}, y_start{};
-    int xbits_cnt, ybits_cnt, lumin;
+    int xbits_cnt, ybits_cnt, gs;
     int** bitmap;
 
     Token(Image* img, int xbit_len, int ybit_len, int x_len, int y_len, int x_start, int y_start);
@@ -31,10 +31,14 @@ class TokenizedImage{
     Image* img{};
     const int xtoken_cnt{}, ytoken_cnt{}, xbit_len{}, ybit_len{};
     int xtoken_len, ytoken_len;
+    int* gs;
+    int gs_cnt;
+    double gs_mean, gs_sd, lumin_mean, lumin_sd;
     Token*** tokens;
 
     TokenizedImage(Image* img, int xtoken_cnt, int ytoken_cnt, int xbit_len, int ybit_len);
     std::string to_string();
+    void map_brightness(int* lumin_array, int lumin_len);
 };
 
 // 如果不是8*8倍数不接受？
