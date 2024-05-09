@@ -29,14 +29,17 @@ class Token{
 class TokenizedImage{
     public:
     Image* img{};
-    const int xtoken_cnt{}, ytoken_cnt{}, xbit_len{}, ybit_len{};
+    Token*** tokens;
+
+    const int xtoken_cnt{}, ytoken_cnt{}, mode{};
     int xtoken_len, ytoken_len;
+    int xbit_len, ybit_len;
+
     int* gs;
     int gs_cnt;
     double gs_mean, gs_sd, lumin_mean, lumin_sd;
-    Token*** tokens;
-
-    TokenizedImage(Image* img, int xtoken_cnt, int ytoken_cnt, int xbit_len, int ybit_len);
+    
+    TokenizedImage(Image* img, int xtoken_cnt, int ytoken_cnt, int mode);
     std::string to_string();
     void map_brightness(int* lumin_array, int lumin_len);
 };

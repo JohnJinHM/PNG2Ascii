@@ -4,6 +4,13 @@
 
 using std::cin, std::cout, std::endl, std::string;
 
+int app_exit(int arg){
+    cin.ignore(INT_MAX,'\n');
+    cout << "Press any key to continue... " << endl;
+    cin.ignore();
+    exit(arg);
+}
+
 void render(unsigned char *bitmap) {
     int x,y;
     int set;
@@ -31,13 +38,46 @@ int main(){
     cin >> filename;
     Image* img = new Image(&filename[0]);
     // visualize(img);
-    TokenizedImage* tk = new TokenizedImage(img,81,27,3,3); // xtokencnt:ytokencnt 3:1? bitlen*tokencnt > image width
+    
+    int img_x = img->width;
+    int img_y = img->height;
+    printf("Input size: %d * %d pixels\n", img_x, img_y);
+    
+    int mode = 0;
+    cout << "Enter asciify mode (0 for GreyScale, 1 for BitMap(WIP)): " << endl;
+    cin >> mode;
+    
+    int xtoken_cnt, ytoken_cnt;
+    cout << "Enter expected output width: " << endl;
+    cin >> xtoken_cnt;
+    cout << "Enter expected output height (Enter 0 to use default): " << endl;
+    cin >> ytoken_cnt;
+
+    if(ytoken_cnt == 0){
+        ytoken_cnt = xtoken_cnt/3; // Magic number, depend on font y vs. x 
+    }
+
+    // Image check
+    switch (mode){
+        case 0:
+            if(xtoken_cnt>img_x||ytoken_cnt>img_y){
+                cout << "Token length out of bound" << endl;
+                app_exit(1);
+            }
+            break;
+        case 1:
+            if(xtoken_cnt*8>img_x||ytoken_cnt*8>img_y){
+                cout << "Token length out of bound" << endl;
+                app_exit(1);
+            }
+            break;
+    }
+
+
+    TokenizedImage* tk = new TokenizedImage(img,xtoken_cnt,ytoken_cnt,mode);
+    
     cout << tk->to_string() << endl;
     cin.clear();
 
-    cin.ignore(INT_MAX,'\n');
-    cout << "Press any key to continue... " << endl;
-    cin.ignore();
-    return 0;
+    app_exit(0);
 }
-
