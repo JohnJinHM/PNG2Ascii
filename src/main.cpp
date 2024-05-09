@@ -54,7 +54,7 @@ int main(){
     cin >> ytoken_cnt;
 
     if(ytoken_cnt == 0){
-        ytoken_cnt = xtoken_cnt/3; // Magic number, depend on font y vs. x 
+        ytoken_cnt = xtoken_cnt/2.5; // Magic number, depend on font y vs. x 
     }
 
     // Image check
