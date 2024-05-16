@@ -6,8 +6,8 @@ class CharMaps{
     int map_len;
     char* chars;
     
-    float* lumin;
-    float* lumin_non_empty;
+    double* lumin;
+    double* lumin_non_empty;
     int lumin_len;
 
     int*** char_bitmaps;

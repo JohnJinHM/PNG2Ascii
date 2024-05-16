@@ -40,12 +40,11 @@ Token::Token(Image* img, int xbit_len, int ybit_len, int x_len, int y_len, int x
 
     xbits_cnt = x_len/xbit_len;
     ybits_cnt = y_len/ybit_len;
-    int avg_gs = 0;
     gs = 0;
 
-    bitmap = new float*[ybits_cnt];
+    bitmap = new double*[ybits_cnt];
     for(int y = 0; y < ybits_cnt; y++){
-        bitmap[y] = new float[xbits_cnt];
+        bitmap[y] = new double[xbits_cnt];
         for(int x = 0; x < xbits_cnt; x++){
             // Fill 0 for out-of-bound
             bitmap[y][x] = 0;
@@ -60,20 +59,45 @@ Token::Token(Image* img, int xbit_len, int ybit_len, int x_len, int y_len, int x
                     else{
                         png_bytep px = &row[x_pos*4];
                         // (R * 11 + G * 16 + B * 5)/32 formula for Grey Scale
-                        avg_gs += (px[0]*11+px[1]*16+px[2]*5)*px[3];
                         // TODO: Change bitmap algorithm, current too low
-                        bitmap[y][x] += (px[0]+px[1]+px[2])*px[3]/3/255/255;
+                        bitmap[y][x] += (px[0]*11+px[1]*16+px[2]*5)*px[3];
                     }
                 }
             }
-            
             bitmap[y][x] = bitmap[y][x]/xbit_len/ybit_len;
-            gs += avg_gs;
-
-            avg_gs = 0;
+            gs += bitmap[y][x];
         }
     }
     gs = gs/xbits_cnt/ybits_cnt/32/255;
+
+    normalize_bitmap();
+}
+
+void Token::normalize_bitmap(){
+    // Softmax doesn't work, try sth else
+    double m = -INFINITY;
+    for (size_t y = 0; y < 8; y++) {
+        for(size_t x = 0; x < 8; x++){
+            if (bitmap[y][x] > m) {
+                m = bitmap[y][x];
+            }
+        }
+    }
+
+    double sum = 0.0;
+    for (size_t y = 0; y < 8; y++) {
+        for(size_t x = 0; x < 8; x++){
+            sum += expf(bitmap[y][x] - m);
+        }
+    }
+
+    double offset = m + logf(sum);
+    for (size_t y = 0; y < 8; y++) {
+        for(size_t x = 0; x < 8; x++){
+            bitmap[y][x] = expf(bitmap[y][x] - offset);
+            printf("%f\n",bitmap[y][x]);
+        }
+    }
 }
 
 // std::string Token::to_string(){
@@ -101,7 +125,7 @@ TokenizedImage::TokenizedImage(Image* _img, int _xtoken_cnt, int _ytoken_cnt, in
             xtoken_len = img->width/xtoken_cnt+1;
             ytoken_len = img->height/ytoken_cnt+1;
             
-            gs = new float[xtoken_cnt*ytoken_cnt];
+            gs = new double[xtoken_cnt*ytoken_cnt];
             gs_cnt = 0;
 
             tokens = new Token**[ytoken_cnt];
@@ -142,18 +166,19 @@ TokenizedImage::TokenizedImage(Image* _img, int _xtoken_cnt, int _ytoken_cnt, in
 std::string TokenizedImage::to_string(){
     std::string temp = "";
     CharMaps* char_maps = new CharMaps();
-    switch (this->mode){
+    
+    switch (mode){
         case 0:
             map_brightness(char_maps->lumin_non_empty, char_maps->lumin_len);
             for(int y = 0; y < ytoken_cnt; y++){
                 for(int x = 0; x < xtoken_cnt; x++){
-                    float min_diff = 255.0;
+                    double min_diff = 255.0;
                     int best_match = 0;
-                    float curr_diff = 0.0;
+                    double curr_diff = 0.0;
                     Token curr = *tokens[y][x];
                     if(curr.gs==0) temp+=" ";
                     else{
-                        float curr_lumin = lumin_mean+(curr.gs-gs_mean)*lumin_sd/gs_sd;
+                        double curr_lumin = lumin_mean+(curr.gs-gs_mean)*lumin_sd/gs_sd;
                         // printf("lm:%d\n", curr_lumin);
                         for(int i = 0; i < char_maps->map_len; i++){
                             curr_diff = std::abs(char_maps->lumin[i]-curr_lumin);
@@ -171,9 +196,9 @@ std::string TokenizedImage::to_string(){
         case 1:
             for(int y = 0; y < ytoken_cnt; y++){
                 for(int x = 0; x < xtoken_cnt; x++){
-                    float min_diff = 255.0;
+                    double min_diff = 255.0;
                     int best_match = 0;
-                    float curr_diff = 0.0;
+                    double curr_diff = 0.0;
                     Token curr = *tokens[y][x];
                     for(int i = 32; i < char_maps->map_len; i++){
                         for(int _y = 0; _y < 8; _y++){
@@ -197,7 +222,7 @@ std::string TokenizedImage::to_string(){
     return temp;
 }
 
-void TokenizedImage::map_brightness(float* lumin_array, int lumin_len){
+void TokenizedImage::map_brightness(double* lumin_array, int lumin_len){
     lumin_mean = std::accumulate(lumin_array,&lumin_array[0]+lumin_len,0.0)/lumin_len;
     double lumin_sq_sum = std::inner_product(lumin_array,&lumin_array[0]+lumin_len,lumin_array,0.0);
     lumin_sd = std::sqrt(lumin_sq_sum / lumin_len - lumin_mean * lumin_mean);

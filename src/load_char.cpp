@@ -16,11 +16,11 @@
 // }
 
 CharMaps::CharMaps(){
+    // Use font8x8_basic only (contains all ascii chars)
     map_len = sizeof(font8x8_basic)/sizeof(*font8x8_basic);
-    // TODO: Add more modules
 
-    lumin = new float[map_len];
-    lumin_non_empty = new float[map_len];
+    lumin = new double[map_len];
+    lumin_non_empty = new double[map_len];
     lumin_len = 0;
     
     chars = new char[map_len];
