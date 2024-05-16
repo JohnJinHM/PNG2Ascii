@@ -17,9 +17,10 @@
 
 CharMaps::CharMaps(){
     map_len = sizeof(font8x8_basic)/sizeof(*font8x8_basic);
+    // TODO: Add more modules
 
-    lumin = new int[map_len];
-    lumin_non_empty = new int[map_len];
+    lumin = new float[map_len];
+    lumin_non_empty = new float[map_len];
     lumin_len = 0;
     
     chars = new char[map_len];
@@ -35,10 +36,13 @@ CharMaps::CharMaps(){
             for (int y = 0; y < 8; y++) {
                 set = font8x8_basic[i][x] & 1 << y;
                 if(set){
+                    // Beware of remapping x and y
                     char_bitmaps[i][x][y] = 1;
                     lumin[i]++;
                 }
-                // 注意xy反转
+                else{
+                    char_bitmaps[i][x][y] = 0;
+                }
             }
         }
         lumin[i] = lumin[i]*255/64;

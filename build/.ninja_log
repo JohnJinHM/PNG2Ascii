@@ -1,15 +1,6 @@
 # ninja log v5
 14	405	7354675332830104	CMakeFiles/Demo.dir/src/read_png.cpp.obj	680499d188dc4ba3
-395	522	7356218957314022	Demo.exe	3f6fefa95d920df2
-4	394	7356218956083417	CMakeFiles/Demo.dir/src/main.cpp.obj	17c1e1bd3bb90a7d
-15	512	7356215516914710	CMakeFiles/Demo.dir/src/asciify.cpp.obj	3f18a01b3ba1098d
-26	315	7356215514941249	CMakeFiles/Demo.dir/src/load_char.cpp.obj	9f636f6602970c4b
-4	393	7369171448302163	CMakeFiles/Demo.dir/src/main.cpp.obj	17c1e1bd3bb90a7d
-5	483	7369174341148415	CMakeFiles/Demo.dir/src/asciify.cpp.obj	3f18a01b3ba1098d
-483	623	7369174342488790	Demo.exe	3f6fefa95d920df2
-4	482	7369174676572999	CMakeFiles/Demo.dir/src/asciify.cpp.obj	3f18a01b3ba1098d
-482	602	7369174677717664	Demo.exe	3f6fefa95d920df2
-4	404	7369175108041782	CMakeFiles/Demo.dir/src/main.cpp.obj	17c1e1bd3bb90a7d
-406	524	7369175109197190	Demo.exe	3f6fefa95d920df2
-4	370	7369192047235383	CMakeFiles/Demo.dir/src/main.cpp.obj	17c1e1bd3bb90a7d
 370	503	7369192048534203	Demo.exe	3f6fefa95d920df2
+4	370	7369192047235383	CMakeFiles/Demo.dir/src/main.cpp.obj	17c1e1bd3bb90a7d
+4	482	7369174676572999	CMakeFiles/Demo.dir/src/asciify.cpp.obj	3f18a01b3ba1098d
+26	315	7356215514941249	CMakeFiles/Demo.dir/src/load_char.cpp.obj	9f636f6602970c4b
