@@ -12,15 +12,15 @@ GreyScale
 * Takes the standard deviation of grey-value((R * 11 + G * 16 + B * 5) / 32 * (A / 255))
 * Map tokens(chunks of pixels) according to the standard deviation of pixel percentages of fonts
 
-<img src="https://raw.githubusercontent.com/JohnJinHM/PNG2Ascii/main/examples/Sample_6_BM_v0.2.0" width="250" height = "189">
+<img src="https://raw.githubusercontent.com/JohnJinHM/PNG2Ascii/main/examples/Sample_6_BM_v0.2.0.png" width="250" height = "189">
 
 
 BitMap (Unstable)
 
 * Similar as GreyScale, though compares the grey-value of each "bits" (smaller chunks of pixels) with each font bitmap
-* Formula: 0.5+(bit-greyvalue_mean)/greyvalue_sd/2 (gives a value between 0 and 1 in most cases)
-* Requires 8 bits per token, therefore works bad on small images
-* Though it can (occasionally) condense details of larger images into less ascii characters (notice the "tentacle" of sample github logo, represented by a the space around "!")
+* Formula: 0.5+(bit_greyvalue-font_greyvalue_mean)/font_greyvalue_sd/2 (gives a value between 0 and 1 in most cases)
+* Requires 8 * 8 bits per token, therefore works bad on small images
+* Though it can (occasionally) condense details of larger images into less ascii characters (notice the "tentacle" of sample github logo, represented by the gaps around "!")
 
 ### Final comments
 I doubt if anyone will ever read this but whatever
