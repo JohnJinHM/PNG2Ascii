@@ -23,7 +23,6 @@ class Token{
     double** bitmap;
 
     Token(Image* img, int xbit_len, int ybit_len, int x_len, int y_len, int x_start, int y_start);
-    void normalize_bitmap();
     // std::string to_string();
 };
 
@@ -43,6 +42,7 @@ class TokenizedImage{
     TokenizedImage(Image* img, int xtoken_cnt, int ytoken_cnt, int mode);
     std::string to_string();
     void map_brightness(double* lumin_array, int lumin_len);
+    void normalize_bitmap(Token* token);
 };
 
 #endif

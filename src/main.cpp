@@ -44,7 +44,7 @@ int main(){
     printf("Input size: %d * %d pixels\n", img_x, img_y);
     
     int mode = 0;
-    cout << "Enter asciify mode (0 for GreyScale, 1 for BitMap(works on larger images)): " << endl;
+    cout << "Enter asciify mode (0 for GreyScale, 1 for BitMap(Unstable)): " << endl;
     cin >> mode;
     
     int xtoken_cnt, ytoken_cnt;

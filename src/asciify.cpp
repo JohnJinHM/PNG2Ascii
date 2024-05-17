@@ -64,40 +64,11 @@ Token::Token(Image* img, int xbit_len, int ybit_len, int x_len, int y_len, int x
                     }
                 }
             }
-            bitmap[y][x] = bitmap[y][x]/xbit_len/ybit_len;
+            bitmap[y][x] = bitmap[y][x]/xbit_len/ybit_len/32/255;
             gs += bitmap[y][x];
         }
     }
-    gs = gs/xbits_cnt/ybits_cnt/32/255;
-
-    normalize_bitmap();
-}
-
-void Token::normalize_bitmap(){
-    // Softmax doesn't work, try sth else
-    double m = -INFINITY;
-    for (size_t y = 0; y < 8; y++) {
-        for(size_t x = 0; x < 8; x++){
-            if (bitmap[y][x] > m) {
-                m = bitmap[y][x];
-            }
-        }
-    }
-
-    double sum = 0.0;
-    for (size_t y = 0; y < 8; y++) {
-        for(size_t x = 0; x < 8; x++){
-            sum += expf(bitmap[y][x] - m);
-        }
-    }
-
-    double offset = m + logf(sum);
-    for (size_t y = 0; y < 8; y++) {
-        for(size_t x = 0; x < 8; x++){
-            bitmap[y][x] = expf(bitmap[y][x] - offset);
-            printf("%f\n",bitmap[y][x]);
-        }
-    }
+    gs = gs/xbits_cnt/ybits_cnt;
 }
 
 // std::string Token::to_string(){
@@ -124,21 +95,7 @@ TokenizedImage::TokenizedImage(Image* _img, int _xtoken_cnt, int _ytoken_cnt, in
             //Prevent cropping
             xtoken_len = img->width/xtoken_cnt+1;
             ytoken_len = img->height/ytoken_cnt+1;
-            
-            gs = new double[xtoken_cnt*ytoken_cnt];
-            gs_cnt = 0;
-
-            tokens = new Token**[ytoken_cnt];
-            for(int y = 0; y < ytoken_cnt; y++){
-                tokens[y] = new Token*[xtoken_cnt];
-                for(int x = 0; x < xtoken_cnt; x++){
-                    tokens[y][x] = new Token(img, xbit_len, ybit_len, xtoken_len, ytoken_len, x*xtoken_len, y*ytoken_len); 
-                    if(tokens[y][x]->gs!=0){
-                        gs[gs_cnt] = tokens[y][x]->gs;
-                        gs_cnt++;
-                    }
-                }
-            }
+    
             break;
 
         case 1:
@@ -151,14 +108,22 @@ TokenizedImage::TokenizedImage(Image* _img, int _xtoken_cnt, int _ytoken_cnt, in
             xtoken_cnt = img->width/xtoken_len;
             ytoken_cnt = img->height/ytoken_len;
 
-            tokens = new Token**[ytoken_cnt];
-            for(int y = 0; y < ytoken_cnt; y++){
-                tokens[y] = new Token*[xtoken_cnt];
-                for(int x = 0; x < xtoken_cnt; x++){
-                    tokens[y][x] = new Token(img, xbit_len, ybit_len, xtoken_len, ytoken_len, x*xtoken_len, y*ytoken_len); 
-                }
-            }
             break;
+    }
+
+    gs = new double[xtoken_cnt*ytoken_cnt];
+    gs_cnt = 0;
+
+    tokens = new Token**[ytoken_cnt];
+    for(int y = 0; y < ytoken_cnt; y++){
+        tokens[y] = new Token*[xtoken_cnt];
+        for(int x = 0; x < xtoken_cnt; x++){
+            tokens[y][x] = new Token(img, xbit_len, ybit_len, xtoken_len, ytoken_len, x*xtoken_len, y*ytoken_len); 
+            if(tokens[y][x]->gs!=0){
+                gs[gs_cnt] = tokens[y][x]->gs;
+                gs_cnt++;
+            }
+        }
     }
 
 }
@@ -166,10 +131,9 @@ TokenizedImage::TokenizedImage(Image* _img, int _xtoken_cnt, int _ytoken_cnt, in
 std::string TokenizedImage::to_string(){
     std::string temp = "";
     CharMaps* char_maps = new CharMaps();
-    
+    map_brightness(char_maps->lumin_non_empty, char_maps->lumin_len);
     switch (mode){
         case 0:
-            map_brightness(char_maps->lumin_non_empty, char_maps->lumin_len);
             for(int y = 0; y < ytoken_cnt; y++){
                 for(int x = 0; x < xtoken_cnt; x++){
                     double min_diff = 255.0;
@@ -200,6 +164,8 @@ std::string TokenizedImage::to_string(){
                     int best_match = 0;
                     double curr_diff = 0.0;
                     Token curr = *tokens[y][x];
+                    normalize_bitmap(&curr);
+
                     for(int i = 32; i < char_maps->map_len; i++){
                         for(int _y = 0; _y < 8; _y++){
                             for(int _x = 0; _x < 8; _x++){
@@ -230,4 +196,22 @@ void TokenizedImage::map_brightness(double* lumin_array, int lumin_len){
     gs_mean = std::accumulate(gs,&gs[0]+gs_cnt,0.0)/gs_cnt;
     double gs_sq_sum = std::inner_product(gs,&gs[0]+gs_cnt,gs,0.0);
     gs_sd = std::sqrt(gs_sq_sum / gs_cnt - gs_mean * gs_mean);
+}
+
+void TokenizedImage::normalize_bitmap(Token* token){
+    // double m = 0;
+    // for (size_t y = 0; y < 8; y++) {
+    //     for(size_t x = 0; x < 8; x++){
+    //         if (token->bitmap[y][x] > m) {
+    //             m = token->bitmap[y][x];
+    //         }
+    //     }
+    // }
+
+    for (size_t y = 0; y < 8; y++) {
+        for(size_t x = 0; x < 8; x++){
+            token->bitmap[y][x] = 0.5 + (token->bitmap[y][x]-gs_mean)/gs_sd/2;
+            // printf("%f\n",bitmap[y][x]);
+        }
+    }
 }
